@@ -1,7 +1,9 @@
 .plateau {
     display: grid;
     grid-template-rows: repeat(22, 40px);
-    grid-template-columns: repeat(19, 40px)
+    grid-template-columns: repeat(19, 40px);
+    width: fit-content;
+    margin: 0 auto;
 }
 
 .mur {
@@ -22,4 +24,14 @@
 
 .greenGhost {
     background-image: url(../img/fantome_vert1.gif);
+}
+
+.score {
+    width: 200px;
+    height: 50px;
+    background-color: black;
+    color: blanchedalmond;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 25px;
 }
