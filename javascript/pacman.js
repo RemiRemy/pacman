@@ -2,22 +2,48 @@
 // });
 
 let pacman = {
-    x: 5,
-    y: 2,
+    x: 2,
+    y: 1,
     direction: 1
 };
 
-let greenGhost = {
-    x: 7,
-    y: 2,
-    direction: 0
-};
 
 let score = 0
 
 let totalBonbon = 0
 
 let stop = null
+
+let arrayGhost = [  // je crée mon tableau pour générer les fantômes
+    {
+        x: 9,
+        y: 11,
+        directon: 0,
+        name: 'green'
+    },
+    {
+        x: 10,
+        y: 12,
+        direction: 1,
+        name: 'red'
+    },
+    {
+        x: 11,
+        y: 11,
+        direction: 2,
+        name: 'orange'
+    },
+    {
+        x: 10,
+        y: 10,
+        direction: 3,
+        name: 'blue'
+    }
+]
+
+
+
+
 
 let grille = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -84,20 +110,22 @@ function tourDeJeu() {
     afficheGrille()
     afficheScore()
     movePacman()
-
     collision()
+    moveGhost()
+
     mange()
     depasse()
 
     affichePacman()
+    ghostDisplay()
     winner()
-
-
 
 
 
     // afficheGhost()
 };
+
+
 
 function affichePacman() {
     let monElement = document.createElement("div");
@@ -107,12 +135,35 @@ function affichePacman() {
 
 }
 
-function afficheGhost() {
-    let monElement = document.createElement("div");
-    monElement.className = "greenGhost"
-    monElement.style.gridArea = greenGhost.y + "/" + greenGhost.x
-    plateau.appendChild(monElement);
+
+
+
+function ghostDisplay() {
+
+
+
+    for (let i in arrayGhost) {
+        let myGhost = document.createElement("div")
+        myGhost.className = arrayGhost[i].name // permet de récupérer la valeur de la clef name
+
+        myGhost.style.gridArea = arrayGhost[i].y + "/" + arrayGhost[i].x
+        plateau.appendChild(myGhost)
+    }
+
 }
+
+
+// VERSION EMILIE
+// function afficheFantomes() {
+//     for (f = 0; f < tabFantomes.length; f++) { // boucle pour chaque fantôme dans le tableau
+//         let monFantome = document.createElement('div'); // créer div
+//         monFantome.classList.add('fantome' + f); // met la classe avec numéro de fantôme
+//         monFantome.style.gridArea = tabFantomes[f].y + "/" + tabFantomes[f].x; // place le fantôme selon coordonnées tableau de fantômes
+//         plateau.appendChild(monFantome) // ajout de la div sur le plateau 
+//     }
+// }
+
+
 
 function movePacman() {
     if (pacman.direction == 0) {
@@ -128,6 +179,47 @@ function movePacman() {
         pacman.y--
     }
 }
+
+function moveGhost() {
+    for (let i in arrayGhost) {
+        if (arrayGhost[i].y == pacman.y && arrayGhost[i].x == pacman.x) {
+            loose()
+        }
+        arrayGhost[i].direction = Math.floor(Math.random() * 4)
+        if (arrayGhost[i].direction == 0) {
+            arrayGhost[i].x++
+        }
+        if (arrayGhost[i].direction == 1) {
+            arrayGhost[i].y++
+        }
+        if (arrayGhost[i].direction == 2) {
+            arrayGhost[i].x--
+        }
+        if (arrayGhost[i].direction == 3) {
+            arrayGhost[i].y--
+        }
+        if (grille[arrayGhost[i].y - 1][arrayGhost[i].x - 1] == 0) {
+            if (arrayGhost[i].direction == 0) {
+                arrayGhost[i].x--
+            }
+            if (arrayGhost[i].direction == 1) {
+                arrayGhost[i].y--
+            }
+            if (arrayGhost[i].direction == 2) {
+                arrayGhost[i].x++
+            }
+            if (arrayGhost[i].direction == 3) {
+                arrayGhost[i].y++
+            }
+        }
+        if (arrayGhost[i].y == pacman.y && arrayGhost[i].x == pacman.x) {
+            loose()
+        }
+    }
+
+}
+
+
 
 function collision() {
     if (grille[pacman.y - 1][pacman.x - 1] == 0) {
@@ -199,3 +291,9 @@ function winner() {
 function gameStop() {
     clearInterval(stop)
 }
+
+function loose() {
+    alert("Vous avez perdu !!")
+    gameStop()
+}
+

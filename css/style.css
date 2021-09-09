@@ -35,3 +35,19 @@
     text-align: center;
     padding-top: 25px;
 }
+
+.blue {
+    background-image: url(../img/fantome_bleu1.gif);
+}
+
+.green {
+    background-image: url(../img/fantome_vert1.gif);
+}
+
+.red {
+    background-image: url(../img/fantome_rouge1.gif);
+}
+
+.orange {
+    background-image: url(../img/fantome_orange1.gif);
+}
