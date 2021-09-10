@@ -46,7 +46,7 @@ let arrayGhost = [  // je crée mon tableau pour générer les fantômes
 
 
 let grille = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0],
     [0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0],
     [0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0],
@@ -67,12 +67,12 @@ let grille = [
     [0, 2, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0],
     [0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0],
     [0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 let plateau
 window.addEventListener("load", () => {
     plateau = document.querySelector(".plateau");
-    stop = setInterval(tourDeJeu, 200)
+    stop = setInterval(tourDeJeu, 2)
     document.body.addEventListener("keyup", clavier) // permet de récupérer la saisie sur le clavier
 
 
@@ -91,14 +91,14 @@ function afficheGrille() {
             }
 
             if (grille[i][j] == 1) {
-                monElement.className = "sol"; // donne une valeur mur a la div si 1
+                monElement.className = "sol"; // donne une valeur sol a la div si 1
             }
 
             if (grille[i][j] == 2) {
-                monElement.className = "bonbon"; // donne une valeur mur a la div si 2
+                monElement.className = "bonbon"; // donne une valeur bonbon a la div si 2
                 totalBonbon++
             }
-            monElement.style.gridArea = (+i + 1) + "/" + (+j + 1)
+            monElement.style.gridArea = (+i + 1) + "/" + (+j + 1)  // gridArea permet d'éviter le décalage (les div ce superpose)
             plateau.appendChild(monElement); // après avoir créer mes div (monElement) je les envoie dans la div plateau
 
         };
@@ -110,15 +110,17 @@ function tourDeJeu() {
     afficheGrille()
     afficheScore()
     movePacman()
-    collision()
-    moveGhost()
-
-    mange()
     depasse()
-
+    collision()
+    mange()
     affichePacman()
+
+    moveGhost()
+    depasseGhost()
+    collisionGhost()
     ghostDisplay()
     winner()
+
 
 
 
@@ -198,20 +200,7 @@ function moveGhost() {
         if (arrayGhost[i].direction == 3) {
             arrayGhost[i].y--
         }
-        if (grille[arrayGhost[i].y - 1][arrayGhost[i].x - 1] == 0) {
-            if (arrayGhost[i].direction == 0) {
-                arrayGhost[i].x--
-            }
-            if (arrayGhost[i].direction == 1) {
-                arrayGhost[i].y--
-            }
-            if (arrayGhost[i].direction == 2) {
-                arrayGhost[i].x++
-            }
-            if (arrayGhost[i].direction == 3) {
-                arrayGhost[i].y++
-            }
-        }
+
         if (arrayGhost[i].y == pacman.y && arrayGhost[i].x == pacman.x) {
             loose()
         }
@@ -255,17 +244,17 @@ function clavier(event) {
 }
 
 function depasse() {
-    if (pacman.y < 0) {
-        pacman.y = 21
+    if (pacman.y < 1) {
+        pacman.y = 22
     }
-    if (pacman.x < 0) {
+    if (pacman.x < 1) {
         pacman.x = 19
     }
-    if (pacman.y > 21) {
-        pacman.y = 0
+    if (pacman.y > 22) {
+        pacman.y = 1
     }
     if (pacman.x > 19) {
-        pacman.x = 0
+        pacman.x = 1
     }
 }
 
@@ -297,3 +286,38 @@ function loose() {
     gameStop()
 }
 
+function depasseGhost() {
+    for (let i in arrayGhost) {
+        if (arrayGhost[i].y < 1) {
+            arrayGhost[i].y = 22
+        }
+        if (arrayGhost[i].x < 1) {
+            arrayGhost[i].x = 19
+        }
+        if (arrayGhost[i].y > 22) {
+            arrayGhost[i].y = 1
+        }
+        if (arrayGhost[i].x > 19) {
+            arrayGhost[i].x = 1
+        }
+    }
+}
+
+function collisionGhost() {
+    for (let i in arrayGhost) {
+        if (grille[arrayGhost[i].y - 1][arrayGhost[i].x - 1] == 0) {
+            if (arrayGhost[i].direction == 0) {
+                arrayGhost[i].x--
+            }
+            if (arrayGhost[i].direction == 1) {
+                arrayGhost[i].y--
+            }
+            if (arrayGhost[i].direction == 2) {
+                arrayGhost[i].x++
+            }
+            if (arrayGhost[i].direction == 3) {
+                arrayGhost[i].y++
+            }
+        }
+    }
+}
